@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Ecoturismo El Salvador</title>
+        <link rel="stylesheet" href="src/leaflet.css">
+        <link rel="stylesheet" href="src/css/bootstrap.css">
+
+        <script src="src/leaflet-src.js"></script>
+        <script src="src/jquery-3.2.0.min.js"></script>
+
+        <style>
+            #mapdiv {
+                height:100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="side-bar" class="col-md-3"></div>
+        <div id="mapdiv" class="col-md-9"></div>
+        <script>
+            //******************VARIABLES******************************
+            //Map vars
+            var mymap;
+            var lyrOSM;
+            var ctlZoom;
+            var ctlAttribute;
+            var ctlScale;
+            
+            //******************INICIALIZACION DE MAPA******************************
+            $(document).ready(function(){
+                mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, zoomControl:false, attributionControl:false});
+                lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+                mymap.addLayer(lyrOSM);
+                
+                //botones zoom
+                ctlZoom= L.control.zoom({zoomInText:'UP', zoomOutText:'OUT'});
+                ctlZoom.addTo(mymap);
+
+                //Atributo esquina
+                ctlAttribute=L.control.attribution({position:'bottomleft'}).addTo(mymap);
+                ctlAttribute.addAttribution('OSM');                
+                ctlAttribute.addAttribution('Grupo11');   
+
+                //Mostrar escala del Mapa    
+                ctlScale=L.control.scale({position:'bottomleft'}).addTo(mymap);         
+            });
+        </script>
+    </body>
+</html>
