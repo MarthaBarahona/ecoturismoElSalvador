@@ -5,9 +5,18 @@
         <title>Ecoturismo El Salvador</title>
         <link rel="stylesheet" href="src/leaflet.css">
         <link rel="stylesheet" href="src/css/bootstrap.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Pan.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
+        <link rel="stylesheet" href="src/plugins/easy-button.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
 
         <script src="src/leaflet-src.js"></script>
         <script src="src/jquery-3.2.0.min.js"></script>
+        <script src="src/plugins/L.Control.Pan.js"></script>
+        <script src="src/plugins/L.Control.Zoomslider.js"></script>
+        <script src="src/plugins/easy-button.js"></script>
+        <script src="src/plugins/L.Control.Sidebar.js"></script>
+        <script src="src/plugins/leaflet-providers.js"></script>
 
         <style>
             #mapdiv {
@@ -16,8 +25,10 @@
         </style>
     </head>
     <body>
-        <div id="side-bar" class="col-md-3"></div>
-        <div id="mapdiv" class="col-md-9"></div>
+        <div id="side-bar" class="col-md-2">
+            <h4>Hola Mundo</h4>
+        </div>
+        <div id="mapdiv" class="col-md-12"></div>
         <script>
             //******************VARIABLES******************************
             //Map vars
@@ -26,20 +37,34 @@
             var ctlZoom;
             var ctlAttribute;
             var ctlScale;
+            var ctlPan;
+            var ctlEasyButton;
+            var ctlSideBar;
             
             //******************INICIALIZACION DE MAPA******************************
             $(document).ready(function(){
                 mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, zoomControl:false, attributionControl:false});
-                lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+                lyrOSM = L.tileLayer.provider('CartoDB.Positron');
                 mymap.addLayer(lyrOSM);
-                
-                //botones zoom
-                ctlZoom= L.control.zoom({zoomInText:'UP', zoomOutText:'OUT'});
-                ctlZoom.addTo(mymap);
+
+                //botones Movimiento
+                ctlPan=L.control.pan().addTo(mymap);
+
+                //Scroller de zoom
+                ctlZoom=L.control.zoomslider({position:'topright'}).addTo(mymap);
+
+                //Barra expansora
+                ctlSideBar=L.control.sidebar('side-bar').addTo(mymap);
+
+                //Boton de expancion
+                ctlEasyButton=L.easyButton('glyphicon glyphicon-transfer',function(){
+                    ctlSideBar.toggle();                    
+                }).addTo(mymap);
 
                 //Atributo esquina
                 ctlAttribute=L.control.attribution({position:'bottomleft'}).addTo(mymap);
                 ctlAttribute.addAttribution('OSM');                
+                ctlAttribute.addAttribution('GIS');                
                 ctlAttribute.addAttribution('Grupo11');   
 
                 //Mostrar escala del Mapa    
