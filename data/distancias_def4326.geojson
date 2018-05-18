@@ -1,0 +1,19 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional Cerro Verde", "DISTANCIA": 50414.99433 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.624180976039526, 13.826597589398963 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Bosque Nacional De Los Volcanes", "DISTANCIA": 50869.69675 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195627263156, 13.697634172414872 ], [ -89.626884910283181, 13.831504327741028 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional Montecristo", "DISTANCIA": 81455.78519 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.380392315999899, 14.383359445000048 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional El Imposible", "DISTANCIA": 86570.65055000001 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.954308580859831, 13.843131890599523 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional Walter Deininger", "DISTANCIA": 23991.25099 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.26374299355642, 13.500383941531343 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Bosque El Pital", "DISTANCIA": 78300.24792 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195627263156, 13.697634172414872 ], [ -89.108373121999904, 14.375263908000083 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Ecológico Conchagua", "DISTANCIA": 158435.87331 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -87.840047382203878, 13.262689105087075 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional El Boqueron", "DISTANCIA": 10687.39196 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.279596856665961, 13.734016270088452 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Balboa", "DISTANCIA": 6562.81054 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.189754601830515, 13.640366297099821 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Parque Nacional de La Familia", "DISTANCIA": 6870.17147 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.19139331114512, 13.637666271241541 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "La Puerta del Diablo", "DISTANCIA": 8463.84362 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -89.190328235349924, 13.623757793336617 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Volcán Tecapa y Laguna de Alegría", "DISTANCIA": 81114.486 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195865012418, 13.6976341359498 ], [ -88.493692244392165, 13.492733728530721 ] ] } },
+{ "type": "Feature", "properties": { "ORIGEN": "Plaza Gerardo Barrios", "DEST": "Los Chorros de la Calera", "DISTANCIA": 62416.19654 }, "geometry": { "type": "LineString", "coordinates": [ [ -89.191195627263156, 13.697634172414872 ], [ -89.733259850055092, 13.836849427193171 ] ] } }
+]
+}

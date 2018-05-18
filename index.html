@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Ecoturismo El Salvador</title>
+        <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="src/leaflet.css">
         <link rel="stylesheet" href="src/css/bootstrap.css">
         <link rel="stylesheet" href="src/plugins/L.Control.Pan.css">
@@ -27,7 +28,20 @@
     </head>
     <body>
         <div id="side-bar" class="col-md-2">
-            <h4>Hola Mundo</h4>
+            <h1>SIG -- ECOTURISMO EN EL SALVADOR</h1>
+            <div id="divNomDef" class="col-xs-12">
+                <div id="divNomLabel" class="text-center col-xs-12">
+                    <h4>Lugares Ecoturisticos Existentes</h4>
+                </div>
+                <div id="divNomDefError" class="errorMsg col-xs-12"></div>
+                <div class="col-xs-6">
+                    <input type="text" id="txtBusDef" class="form-control" placeholder="Nombre del Lugar">
+                </div>
+                <div class="col-xs-6">
+                    <button id="btnBusDef" class="btn btn-primary btn-block">Buscar Lugar Ecoturistico</button>
+                </div>
+            </div>
+            <div class="" id="divDefDatos"></div>
         </div>
         <div id="mapdiv" class="col-md-12"></div>
         <script>
@@ -47,17 +61,17 @@
             var ctlLayers;
             var otro;
             //Variables para las capas
+            //Lugares Definidos
             var lyrDefPlaces;
-            var lyrActividades;
+            var lyrDefActividades;
+            var lyrDefCaminos;
+            var lyrDefDistancias;
 
 
             //******************INICIALIZACION DE MAPA******************************
             $(document).ready(function(){
                 mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, attributionControl:false});
-                
-
-                //botones Movimiento
-                //ctlPan=L.control.pan().addTo(mymap);
+ 
                 
                 //Barra expansora
                 ctlSideBar=L.control.sidebar('side-bar').addTo(mymap);
@@ -78,13 +92,15 @@
                 
                 //******************INICIALIZADORES DE LAS CAPAS******************************
                 //Mapas Base
-                lyrOSM = L.tileLayer.provider('CartoDB.Positron');
+                lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');
                 otro = L.tileLayer.provider('Stamen.Watercolor');
                 mymap.addLayer(lyrOSM);
 
                 //Capas del mapa
-                lyrDefPlaces=L.geoJSON.ajax('data/prueba.geojson').addTo(mymap);
-                lyrActividades=L.geoJSON.ajax('data/reservas3_pro3857.geojson').addTo(mymap);
+                lyrDefPlaces=L.geoJSON.ajax('data/reservas_def4326.geojson').addTo(mymap);
+                lyrDefActividades=L.geoJSON.ajax('data/actividades_def4326.geojson').addTo(mymap);
+                lyrDefCaminos=L.geoJSON.ajax('data/caminos_def4326.geojson').addTo(mymap);
+                lyrDefDistancias=L.geoJSON.ajax('data/distancias_def4326.geojson').addTo(mymap);
                 
 
                 
@@ -98,17 +114,13 @@
                 
                 objOverlays={
                     "Lugares Definidos": lyrDefPlaces,
-                    "Actividades": lyrActividades,
+                    "Actividades Lugares Definidos": lyrDefActividades,
+                    "Caminos Lugares Definidos": lyrDefCaminos,
+                    "Distancias Lugares Definidos": lyrDefDistancias,
 
                 };
                 ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap);
-                
-                
-                //--------
-                //Scroller de zoom
-                //ctlZoom=L.control.zoomslider({position:'topright'}).addTo(mymap);
-
-                
+      
         });    
             
             
