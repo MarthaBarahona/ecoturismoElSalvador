@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>Ecoturismo El Salvador</title>
+        <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="src/leaflet.css">
         <link rel="stylesheet" href="src/css/bootstrap.css">
@@ -10,6 +12,7 @@
         <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
         <link rel="stylesheet" href="src/plugins/easy-button.css">
         <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
+        <link rel="stylesheet" href="src/css/font-awesome.min.css">
 
         <script src="src/leaflet-src.js"></script>
         <script src="src/jquery-3.2.0.min.js"></script>
@@ -19,29 +22,55 @@
         <script src="src/plugins/L.Control.Sidebar.js"></script>
         <script src="src/plugins/leaflet-providers.js"></script>
         <script src="src/plugins/leaflet.ajax.min.js"></script>
+        <script src="src/plugins/leaflet.sprite.js"></script>
 
-        <style>
-            #mapdiv {
-                height:100vh;
-            }
-        </style>
     </head>
     <body>
         <div id="side-bar" class="col-md-2">
             <h1>SIG -- ECOTURISMO EN EL SALVADOR</h1>
-            <div id="divNomDef" class="col-xs-12">
-                <div id="divNomLabel" class="text-center col-xs-12">
-                    <h4>Lugares Ecoturisticos Existentes</h4>
-                </div>
-                <div id="divNomDefError" class="errorMsg col-xs-12"></div>
-                <div class="col-xs-6">
-                    <input type="text" id="txtBusDef" class="form-control" placeholder="Nombre del Lugar">
-                </div>
-                <div class="col-xs-6">
-                    <button id="btnBusDef" class="btn btn-primary btn-block">Buscar Lugar Ecoturistico</button>
-                </div>
+            <!--***********LUGARES DEFINIDOS CONSULTAS-->
+            <div id="divNomLabel" class="text-center col-xs-12">
+                <h3>LUGARES ECOTURISTICOS EXISTENTES</h3>
             </div>
-            <div class="" id="divDefDatos"></div>
+            <div id="divDistancia" class="col-xs-12">
+                <div id="divDisLabel" class="text-center col-xs-12">
+                    <h4>Distancias</h4>
+                    <h4>Ingrese el lugar del cual desea conocer la Distancia</h4>
+                </div>
+                <div id="divProjectError" class="errorMsg col-xs-12"></div>
+                <div id="divDistancia" class="formgroup">
+                    <div class="col-xs-6">
+                        <input type="text" id="txtDistancia" class="form-control" placeholder="Lugar">
+                    </div>
+                    <div class="col-xs-6">
+                        <button id="btnDistancia" class="btn btn-primary btn-block">Buscar</button>
+                    </div>
+                </div>
+                <div class="" id="divDistanciaData"></div>
+            </div>
+
+            <!--***********LUGARES PROPUESTOS CONSULTAS-->
+            <div id="divNomLabel" class="text-center col-xs-12">
+                <h3>LUGARES ECOTURISTICOS PROPUESTOS</h3>
+            </div>
+            <div id="divDistanciaPro" class="col-xs-12">
+                <div id="divDisLabel" class="text-center col-xs-12">
+                    <h4>Distancias</h4>
+                    <h4>Ingrese el lugar del cual desea conocer la Distancia</h4>
+                    </div>
+                <div id="divProjectError" class="errorMsg col-xs-12"></div>
+                <div id="divDistanciaPro" class="formgroup">
+                    <div class="col-xs-6">
+                        <input type="text" id="txtDistanciaPro" class="form-control" placeholder="Lugar">
+                    </div>
+                    <div class="col-xs-6">
+                        <button id="btnDistanciaPro" class="btn btn-primary btn-block">Buscar</button>
+                    </div>
+                </div>
+                <div class="" id="divDistanciaData"></div>
+                </div>
+
+            
         </div>
         <div id="mapdiv" class="col-md-12"></div>
         <script>
@@ -59,18 +88,38 @@
             var objBasemaps;
             var objOverlays;
             var ctlLayers;
-            var otro;
             //Variables para las capas
             //Lugares Definidos
+            var lyrSearch;
             var lyrDefPlaces;
             var lyrDefActividades;
+            var incBlueSprite;
+            var incGreenSprite;
+            var incOrangeSprite;
+            var incYellowSprite;
+            var incRedSprite;
+            var incPurpleSprite;
+            var incVioletSprite;            
             var lyrDefCaminos;
             var lyrDefDistancias;
+            var arProjectIDs = [];
+            //Lugares Propuestos
+            var lyrProDistancias;
+            var lyrProLugares;
 
 
             //******************INICIALIZACION DE MAPA******************************
             $(document).ready(function(){
-                mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, attributionControl:false});
+                //Iconos Actividades
+                incBlueSprite=L.spriteIcon();
+                incGreenSprite=L.spriteIcon('green');
+                incOrangeSprite=L.spriteIcon('orange');
+                incYellowSprite=L.spriteIcon('yellow');
+                incRedSprite=L.spriteIcon('red');
+                incPurpleSprite=L.spriteIcon('purple');
+                incVioletSprite=L.spriteIcon('violet');
+
+                mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, attributionControl:false});
  
                 
                 //Barra expansora
@@ -92,38 +141,175 @@
                 
                 //******************INICIALIZADORES DE LAS CAPAS******************************
                 //Mapas Base
-                lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');
-                otro = L.tileLayer.provider('Stamen.Watercolor');
+                lyrOSM = L.tileLayer.provider('CartoDB.Positron');
                 mymap.addLayer(lyrOSM);
 
                 //Capas del mapa
-                lyrDefPlaces=L.geoJSON.ajax('data/reservas_def4326.geojson').addTo(mymap);
-                lyrDefActividades=L.geoJSON.ajax('data/actividades_def4326.geojson').addTo(mymap);
-                lyrDefCaminos=L.geoJSON.ajax('data/caminos_def4326.geojson').addTo(mymap);
-                lyrDefDistancias=L.geoJSON.ajax('data/distancias_def4326.geojson').addTo(mymap);
+                lyrDefPlaces=L.geoJSON.ajax('data/reservas_def4326.geojson',{style:styleDef, onEachFeature:processDef}).addTo(mymap);
+
+                lyrDefActividades=L.geoJSON.ajax('data/actividades_def4326.geojson',{pointToLayer:returnActividadMarket}).addTo(mymap);                
+
+                lyrDefCaminos=L.geoJSON.ajax('data/caminos_def4326.geojson',{style:styleCamino, onEachFeature:processCamino}).addTo(mymap);
                 
 
+                lyrDefDistancias=L.geoJSON.ajax('data/distancias_def4326.geojson', {style:styleDistanciaDef, onEachFeature:processDistancia}).addTo(mymap);                
+                
+                
+                lyrProLugares=L.geoJSON.ajax('data/reservas_pro4346.geojson', {style:stylePro, onEachFeature:processPro}).addTo(mymap);
+                
+                lyrProDistancias=L.geoJSON.ajax('data/distancias_pro4346.geojson',{style:styleDistanciaPro, onEachFeature:processDistanciaPro}).addTo(mymap);
+
+                var pro= L.layerGroup([lyrProLugares,lyrProDistancias]);
+                
+                
                 
                 //******************CONFIGURACION DE CAPA BASE Y DEMAS CAPAS******************************
                 //Tienen que ir antes de ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap); SINO NO funciona
                 objBasemaps={
-                "Open Street Marp":lyrOSM,
-                "Water Color":otro
+                "Open Street Marp":lyrOSM
+                
                 }
                 
                 
                 objOverlays={
-                    "Lugares Definidos": lyrDefPlaces,
-                    "Actividades Lugares Definidos": lyrDefActividades,
-                    "Caminos Lugares Definidos": lyrDefCaminos,
-                    "Distancias Lugares Definidos": lyrDefDistancias,
-
+                    "Lugares Definidos": lyrDefPlaces,                                        
+                    "Actividades":lyrDefActividades,
+                    "Caminos":lyrDefCaminos,
+                    "Distancias":lyrDefDistancias,
+                    "Lugares Propuestos":pro
+                    
                 };
+
                 ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap);
       
         });    
-            
-            
+        //******************FUNCIONES LUGARES DEFINIDOS******************************    
+        
+        //---LUGARES DEFINIDOS----
+        //LUGARES DEFINIDOS
+        function styleDef(json){
+            return {color:"#ff9800", fillColor:"#76ff03"};
+        }
+
+        function processDef(json, lyr){
+                var att = json.properties;
+                lyr.bindTooltip("<h4>Lugar: "+att.NOMBRE+"</h4>Tipo: "+att.LAYER+"<br>Descripcion: "+att.DESCRIP);                
+            }
+
+        //ACTIVIDADES
+        function returnActividadMarket(json, latlng){
+            var att = json.properties;
+            if(att.CAMINATA=='T'){
+            var incAct=incGreenSprite;
+            //return L.circleMarker(latlng,{radius:1, color:"#880e4f"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Caminata.</br>");
+            return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Caminata.");
+            }
+            if(att.ACT_LIBRE=='T'){
+                var incAct=incBlueSprite;
+                //return L.circleMarker(latlng,{radius:1, color:"#4a148c"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Actividad al Aire Libre.</br>");
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Actividad al Aire Libre.");
+            }
+            if(att.CAMPING=='T'){
+                var incAct=incGreenSprite;
+                //return L.circleMarker(latlng,{radius:1, color:"#3d5afe"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Camping</br>");
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Camping");
+            }
+            if(att.MIRADOR=='T'){
+                var incAct=incOrangeSprite;
+                //return L.circleMarker(latlng,{radius:1, color:"#00b0ff"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Mirador.</br>");
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Mirador.");
+            }
+            if(att.RAPEL=='T'){
+                var incAct=incYellowSprite;
+                //return L.circleMarker(latlng,{radius:1, color:"#ffd600"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Rapel</br>");
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Rapel");
+            }
+            if(att.BUGGIES=="T"){
+                var incAct=incRedSprite;
+                //return L.circleMarker(latlng,{radius:1, color:"#ffd600"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4><br>Actividad:Buggies</br>");
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Buggies");
+            }
+            if(att.FAU_FLO=='T'){
+                var incAct=incVioletSprite;
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Observacion de Flora y Fauna");
+                //return L.circleMarker(latlng,{radius:1, color:"#ffd600"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad:Observacion de Flora y Fauna");
+            }
+            if(att.MONTANISMO){
+                var incAct=incPurpleSprite;
+                return L.marker(latlng,{icon:incAct}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad: Montañismo");
+                //return L.circleMarker(latlng,{radius:1, color:"#ffd600"}).bindTooltip("<h4>Nombre: "+att.RESV_NAT+"</h4>Actividad: Montañismo");
+            }
+        }
+        
+
+        //CAMINOS
+        function styleCamino(json){
+            return {color: "#880e4f", dashArray:"5,5"};
+        }
+
+        function processCamino(json, lyr){
+            var att = json.properties;            
+            lyr.bindTooltip("<h4>Lugar: "+att.nom_reserv);
+        }        
+        
+
+        //DISTANCIA
+        function styleDistanciaDef(json){
+            return {color: "#18ffff"};
+        }
+        
+        function processDistancia(json, lyr){
+            var att = json.properties;            
+            lyr.bindTooltip("<h4>Destino: "+att.DEST+"</h4>Origen: "+att.ORIGEN+"<h4>Distancia en Metros: "+att.DISTANCIA);
+        }
+
+
+        function returnDistancia (id){
+            var arLayers=lyrDefDistancias.getLayers();
+            for (i=0;i<arLayers.length-1;i++){
+                var DistanciaID =arLayers[i].feature.properties.DEST;
+                console.log(DistanciaID);
+                if(DistanciaID==id){
+                    return arLayers[i];
+                }
+            }
+            return false;
+        }
+
+        $("#btnDistancia").click(function(){
+            var id=$("#txtDistancia").val();
+            var lyr = returnDistancia(id);
+            if (lyr){
+                if(lyrSearch){
+                    lyrSearch.remove();
+                }
+                lyrSearch= L.geoJSON(lyr.toGeoJSON(),{style:{color:'#ff3d00',weight:18, opacity:0.5}}).addTo(mymap);
+                var att=lyr.feature.properties;
+                $("#divDistanciaData").html("<h4 class='text-center'>Distancia</h4><h5>Lugar: "+att.DEST+"</h5><h5>Distancia en Metros: "+att.DISTANCIA+"</h5>");
+            }else{
+                $("#divProjectError").html("****Lugar no encontrado****");
+            }
+        });
+
+        //******************FUNCIONES LUGARES PROPUESTOS******************************   
+        function stylePro(json){
+            return {color:"#00b0ff", fillColor:"#00e5ff"};
+        }
+        function processPro(json, lyr){
+            var att = json.properties;            
+            lyr.bindTooltip("<h4>Lugar: "+att.NOMBRE+"</h4>Actvidades: "+att.ACTIVIDAD+"<br>Descripcion: "+att.DESCRIP);
+        }
+
+        //DISTANCIA
+        function styleDistanciaPro(json){
+            return {color: "#ffff00", dashArray:"5,5"};
+        }
+
+        function processDistanciaPro(json, lyr){
+            var att = json.properties;            
+            lyr.bindTooltip("<h4>Destino: "+att.DESTINO+"</h4>Origen: "+att.ORIGEN+"<br>Distancia: "+att.DISTANCIA);
+        }
+
 
         </script>
     </body>

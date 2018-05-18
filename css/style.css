@@ -1,3 +1,40 @@
-h1{
+
+/*Elementos Generales*/
+h1, h4{
     text-align: center;
+    font-weight: 700;
+}
+
+#side-bar{
+    background-color: #ccff90;
+    font-family: "Shadows Into Light", sans-serif;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.7;
+   
+}
+
+#mapdiv {
+    height:100vh;
+}
+
+.col-xs-12, .col-xs-6, .col-xs-4{
+    padding: 3px;
+}
+
+.errorMsg{
+    padding: 0;
+
+}
+
+
+
+/*Lugares Definidos*/
+#divFilterAct, #divDef, #divDistancia, #divDistanciaPro{
+    background-color:#69f0ae;
+}
+
+
+#txtBusDef{
+    margin-top: 8px;
 }
