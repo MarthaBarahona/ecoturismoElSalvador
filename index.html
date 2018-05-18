@@ -17,6 +17,7 @@
         <script src="src/plugins/easy-button.js"></script>
         <script src="src/plugins/L.Control.Sidebar.js"></script>
         <script src="src/plugins/leaflet-providers.js"></script>
+        <script src="src/plugins/leaflet.ajax.min.js"></script>
 
         <style>
             #mapdiv {
@@ -45,32 +46,19 @@
             var objOverlays;
             var ctlLayers;
             var otro;
-            
+            //Variables para las capas
+            var lyrDefPlaces;
+            var lyrActividades;
+
+
             //******************INICIALIZACION DE MAPA******************************
             $(document).ready(function(){
-                mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, zoomControl:false, attributionControl:false});
-                lyrOSM = L.tileLayer.provider('CartoDB.Positron');
-                otro = L.tileLayer.provider('Stamen.Watercolor');
-                mymap.addLayer(lyrOSM);
-
-                objBasemaps={
-                "Open Street Marp":lyrOSM,
-                "Water Color":otro
-                }
-
-                objOverlays={
-
-                };
-            
-
-                ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap);
+                mymap = L.map('mapdiv', {center:[13.8271092,-88.8003683], zoom:9, minZoom:6, maxZoom:13, attributionControl:false});
+                
 
                 //botones Movimiento
-                ctlPan=L.control.pan().addTo(mymap);
-
-                //Scroller de zoom
-                ctlZoom=L.control.zoomslider({position:'topright'}).addTo(mymap);
-
+                //ctlPan=L.control.pan().addTo(mymap);
+                
                 //Barra expansora
                 ctlSideBar=L.control.sidebar('side-bar').addTo(mymap);
 
@@ -86,9 +74,41 @@
                 ctlAttribute.addAttribution('Grupo11');   
 
                 //Mostrar escala del Mapa    
-                ctlScale=L.control.scale({position:'bottomleft'}).addTo(mymap);     
+                ctlScale=L.control.scale({position:'bottomleft'}).addTo(mymap);                     
                 
-            //******************CONTROLADORES DE CAPA BASE Y DEMAS CAPAS******************************    
+                //******************INICIALIZADORES DE LAS CAPAS******************************
+                //Mapas Base
+                lyrOSM = L.tileLayer.provider('CartoDB.Positron');
+                otro = L.tileLayer.provider('Stamen.Watercolor');
+                mymap.addLayer(lyrOSM);
+
+                //Capas del mapa
+                lyrDefPlaces=L.geoJSON.ajax('data/prueba.geojson').addTo(mymap);
+                lyrActividades=L.geoJSON.ajax('data/reservas3_pro3857.geojson').addTo(mymap);
+                
+
+                
+                //******************CONFIGURACION DE CAPA BASE Y DEMAS CAPAS******************************
+                //Tienen que ir antes de ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap); SINO NO funciona
+                objBasemaps={
+                "Open Street Marp":lyrOSM,
+                "Water Color":otro
+                }
+                
+                
+                objOverlays={
+                    "Lugares Definidos": lyrDefPlaces,
+                    "Actividades": lyrActividades,
+
+                };
+                ctlLayers=L.control.layers(objBasemaps, objOverlays).addTo(mymap);
+                
+                
+                //--------
+                //Scroller de zoom
+                //ctlZoom=L.control.zoomslider({position:'topright'}).addTo(mymap);
+
+                
         });    
             
             
